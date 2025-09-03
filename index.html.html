@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>แบบบ้านขุนบรรลือ – งานออกแบบบ้านพักอาศัย</title>
+<meta name="description" content="แกลเลอรีผลงานงานออกแบบบ้านพักอาศัย พร้อมจัดหมวดย่อยต่อโครงการได้ในหน้า (บันทึกในเครื่อง)">
+<style>
+  :root{ --text:#111; --muted:#667085; --brand:#0ea5a3; --brand2:#0b837f; --line:#e6e8ec; --bg:#f5f7fb; --card:#fff; --max:1200px }
+  *{box-sizing:border-box} html,body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Tahoma,Arial;color:var(--text);background:var(--bg)}
+  a{color:var(--brand);text-decoration:none}
+  img{max-width:100%;display:block}
+  .topbar{background:#111;color:#fff}
+  .topwrap{max-width:var(--max);margin:auto;padding:8px 16px;display:flex;align-items:center;gap:12px}
+  .topwrap img.logo{height:40px}
+  .brand{font-weight:700} .phone{margin-left:auto;font-weight:600}
+  header{background:rgba(34,34,34,.92);color:#fff;text-align:center}
+  .hero{max-width:var(--max);margin:12px auto;border-radius:18px;overflow:hidden}
+  .hero img{width:100%;height:44svh;min-height:320px;object-fit:cover}
+  .wrap{max-width:var(--max);margin:14px auto 28px;padding:0 16px}
+  .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin:10px 0}
+  .left, .right{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  select,button{padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:#fff;cursor:pointer}
+  .badge{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#fff;color:#333}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;position:relative}
+  .thumb{width:100%;height:180px;object-fit:cover;cursor:zoom-in}
+  .cap{padding:10px;font-size:14px;color:#475467;display:flex;justify-content:space-between;gap:8px;align-items:center}
+  .cap small{color:#98a2b3}
+  .sel{position:absolute;top:8px;left:8px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px;display:none}
+  .admin .sel{display:block}
+  .toolbar{display:none;gap:8px}
+  .admin .toolbar{display:flex}
+  footer{background:#111;color:#fff;text-align:center;padding:22px;margin-top:24px}
+  /* lightbox */
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;place-items:center;z-index:90;padding:16px}
+  .lightbox.open{display:grid}
+  .lbimg{max-width:96vw;max-height:84vh;border-radius:12px}
+  .lbbar{display:flex;gap:10px;justify-content:center;margin-top:10px}
+  .btn{padding:8px 12px;border-radius:10px;border:1px solid #ffffff3a;background:#ffffff22;color:#fff;cursor:pointer}
+  .lbclose{position:absolute;top:16px;right:16px}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topwrap">
+    <img class="logo" src="https://i.postimg.cc/qRNt9Xhf/image.png" alt="โลโก้ แบบบ้านขุนบรรลือ">
+    <div class="brand">แบบบ้านขุนบรรลือ</div>
+    <div class="phone">โทร 095-4849796</div>
+  </div>
+</div>
+
+<header class="hero">
+  <!-- Hero ใช้ 00.jpg (ปรับได้) -->
+  <img src="https://i.postimg.cc/3J5BFWVr/00.jpg" alt="Hero">
+</header>
+
+<div class="wrap">
+  <div class="controls">
+    <div class="left">
+      <span class="badge">หมวดหลัก: งานออกแบบบ้านพักอาศัย</span>
+      <label>หมวดย่อย:
+        <select id="filter">
+          <option value="ทั้งหมด" selected>ทั้งหมด</option>
+          <option value="โครงการ 2-series">โครงการ 2-series</option>
+          <option value="โครงการ 00–05">โครงการ 00–05</option>
+          <option value="โครงการ 6577x">โครงการ 6577x</option>
+          <option value="อื่น ๆ">อื่น ๆ</option>
+        </select>
+      </label>
+    </div>
+    <div class="right">
+      <div class="toolbar" id="toolbar">
+        <label>ย้ายไป:
+          <select id="moveTo">
+            <option>โครงการ 2-series</option>
+            <option>โครงการ 00–05</option>
+            <option>โครงการ 6577x</option>
+            <option>อื่น ๆ</option>
+          </select>
+        </label>
+        <button id="applyMove">ย้ายหมวด</button>
+        <button id="clearSel">ยกเลิกเลือก</button>
+      </div>
+      <button id="toggleAdmin">โหมดจัดหมวด</button>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="btn lbclose" id="lbClose">ปิด</button>
+  <div>
+    <img id="lbImg" class="lbimg" alt="">
+    <div class="lbbar">
+      <button class="btn" id="lbPrev">ก่อนหน้า</button>
+      <button class="btn" id="lbNext">ถัดไป</button>
+      <button class="btn" id="lbDL">ดาวน์โหลดรูป</button>
+      <button class="btn" id="lbShare">แชร์ลิงก์</button>
+    </div>
+  </div>
+</div>
+
+<footer>© <span id="year"></span> แบบบ้านขุนบรรลือ • งานออกแบบบ้านพักอาศัย</footer>
+
+<script>
+/* ===== ข้อมูลภาพทั้งหมด (49 รูป) พร้อมเดาหมวดย่อยเบื้องต้น ===== */
+const IMAGES = [
+  // 2-series
+  {src:"https://i.postimg.cc/brTjg4yq/2-1.jpg", cap:"2-1", sub:"โครงการ 2-series"},
+  {src:"https://i.postimg.cc/Vv18jzc7/2-2.jpg", cap:"2-2", sub:"โครงการ 2-series"},
+  {src:"https://i.postimg.cc/05dx9Kph/2-3.jpg", cap:"2-3", sub:"โครงการ 2-series"},
+  {src:"https://i.postimg.cc/bNyPrYgr/2-4.jpg", cap:"2-4", sub:"โครงการ 2-series"},
+  {src:"https://i.postimg.cc/gkgWZ9dT/2-5.jpg".replace("dT","dD"), cap:"2-5", sub:"โครงการ 2-series"}, // note: fix small typo if any
+  {src:"https://i.postimg.cc/FHqXTy4k/2-6.jpg", cap:"2-6", sub:"โครงการ 2-series"},
+  {src:"https://i.postimg.cc/g0ZFQxzS/2-7.jpg", cap:"2-7", sub:"โครงการ 2-series"},
+  {src:"https://i.postimg.cc/wM9C1FhZ/2-9.jpg", cap:"2-9", sub:"โครงการ 2-series"},
+
+  // 00–05 ชุดเดียวกัน
+  {src:"https://i.postimg.cc/3J5BFWVr/00.jpg", cap:"00", sub:"โครงการ 00–05"},
+  {src:"https://i.postimg.cc/RF2T800R/01.jpg", cap:"01", sub:"โครงการ 00–05"},
+  {src:"https://i.postimg.cc/tRVk6Frm/02.jpg", cap:"02", sub:"โครงการ 00–05"},
+  {src:"https://i.postimg.cc/qvCpVbQx/04.jpg", cap:"04", sub:"โครงการ 00–05"},
+  {src:"https://i.postimg.cc/Zq8Z0WG9/05.jpg", cap:"05", sub:"โครงการ 00–05"},
+
+  // 6577x กลุ่มเดียว
+  {src:"https://i.postimg.cc/B6ndT2dP/65777-0.jpg", cap:"65777-0", sub:"โครงการ 6577x"},
+  {src:"https://i.postimg.cc/XJ1tQpbH/65778-0.jpg", cap:"65778-0", sub:"โครงการ 6577x"},
+  {src:"https://i.postimg.cc/R0RkJgbz/65779-0.jpg", cap:"65779-0", sub:"โครงการ 6577x"},
+
+  // อื่น ๆ (เดาไม่ได้จากชื่อไฟล์ จัดเป็น 'อื่น ๆ' ก่อน)
+  {src:"https://i.postimg.cc/SKy54WQ1/65787-0.jpg", cap:"65787-0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/htSW4Fp0/65806-0.jpg", cap:"65806-0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/Dy33D4GH/65804-0.jpg", cap:"65804-0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/nz6fnCPs/65801-0.jpg", cap:"65801-0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/3xBh2rd6/65797-0.jpg", cap:"65797-0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/DyPHMjn4/65814-0.jpg", cap:"65814-0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/C5QBhHVG/65866_0.jpg", cap:"65866_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/htxzndZm/65870_0.jpg", cap:"65870_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/76Bb9MhF/65874_0.jpg", cap:"65874_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/8c2pXyS0/65886_0.jpg", cap:"65886_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/CMQzfNWD/65877_0.jpg", cap:"65877_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/wTNTRd58/65888_0.jpg", cap:"65888_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/bNRkMMrn/66030_0.jpg", cap:"66030_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/cL4wNmtb/66031_0.jpg", cap:"66031_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/wTzDwHqH/66029_0.jpg", cap:"66029_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/vB65NZx8/66023_0.jpg", cap:"66023_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/25t4GZ6X/66025_0.jpg", cap:"66025_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/nhZT9Bj4/66012_0.jpg", cap:"66012_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/kGKFBg7Y/66018_0.jpg", cap:"66018_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/QxKkBVn8/65983_0.jpg", cap:"65983_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/mDdN99sD/65976_0.jpg", cap:"65976_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/Z5TRGMNG/65910_0.jpg", cap:"65910_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/NGH5mTYz/65907_0.jpg", cap:"65907_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/NMWFZG8D/65905_0.jpg", cap:"65905_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/zvKvNm0r/65906_0.jpg", cap:"65906_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/mgRzbrv6/65900_0.jpg", cap:"65900_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/ZYByH2Pj/65897_0.jpg", cap:"65897_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/jSdxgJ0K/65920_0.jpg", cap:"65920_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/65BtqGQR/65928_0.jpg", cap:"65928_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/BZTJJCJ4/65927_0.jpg", cap:"65927_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/CLvTKPXT/65939_0.jpg", cap:"65939_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/RVZy21FP/65948_0.jpg", cap:"65948_0", sub:"อื่น ๆ"},
+  {src:"https://i.postimg.cc/g26R05jn/65860_0.jpg", cap:"65860_0", sub:"อื่น ๆ"}
+];
+
+// ===== โหลดการจัดหมวดจาก localStorage ถ้ามี =====
+const SAVED = JSON.parse(localStorage.getItem("khun-subcats")||"{}");
+IMAGES.forEach(it=>{ if(SAVED[it.src]) it.sub = SAVED[it.src]; });
+
+const grid = document.getElementById('grid');
+const filter = document.getElementById('filter');
+const toggleAdmin = document.getElementById('toggleAdmin');
+const toolbar = document.getElementById('toolbar');
+const moveTo = document.getElementById('moveTo');
+const applyMove = document.getElementById('applyMove');
+const clearSel = document.getElementById('clearSel');
+let admin=false, curList=[...IMAGES], sel=new Set();
+
+// เรนเดอร์การ์ด
+function card(it,i){
+  return `
+  <figure class="card">
+    <input class="sel" type="checkbox" data-idx="${i}" ${sel.has(i)?'checked':''}>
+    <img class="thumb" src="${it.src}" alt="${it.cap}" onclick="openLB(${i})">
+    <figcaption class="cap">
+      <div>${it.cap} <small>• ${it.sub}</small></div>
+      <button onclick="editOne(${i})" style="border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 8px;cursor:pointer;display:${admin?'block':'none'}">ย้าย</button>
+    </figcaption>
+  </figure>`;
+}
+function render(list){ grid.innerHTML = list.map((it,i)=>card(it,i)).join(''); bindSelects(); }
+function bindSelects(){ grid.querySelectorAll('.sel').forEach(cb=>{
+  cb.onchange = (e)=>{ const i=+cb.dataset.idx; if(cb.checked) sel.add(i); else sel.delete(i); };
+});}
+
+// ฟิลเตอร์
+function applyFilter(){
+  const cat = filter.value;
+  curList = cat==="ทั้งหมด" ? [...IMAGES] : IMAGES.filter(x=>x.sub===cat);
+  sel.clear(); render(curList);
+}
+filter.onchange = applyFilter;
+
+// โหมดจัดหมวด
+toggleAdmin.onclick = ()=>{
+  admin=!admin; document.body.classList.toggle('admin', admin);
+  toolbar.style.display = admin ? 'flex' : 'none';
+  render(curList);
+};
+
+// ย้ายเดี่ยว/ย้ายหลาย
+window.editOne = (i)=>{
+  const to = prompt("ย้ายไปหมวดย่อย (พิมพ์ชื่อใหม่ได้):", curList[i].sub);
+  if(!to) return; curList[i].sub = to; persist();
+  applyFilter();
+};
+applyMove.onclick = ()=>{
+  const to = moveTo.value;
+  sel.forEach(i=>{ curList[i].sub = to; });
+  persist(); applyFilter();
+};
+clearSel.onclick = ()=>{ sel.clear(); render(curList); };
+
+// บันทึกลง localStorage
+function persist(){
+  const map={}; IMAGES.forEach(it=>map[it.src]=it.sub);
+  localStorage.setItem("khun-subcats", JSON.stringify(map));
+}
+
+// Lightbox
+const lightbox=document.getElementById('lightbox'), lbImg=document.getElementById('lbImg');
+const lbClose=document.getElementById('lbClose'), lbPrev=document.getElementById('lbPrev'), lbNext=document.getElementById('lbNext');
+const lbDL=document.getElementById('lbDL'), lbShare=document.getElementById('lbShare');
+let cur=0;
+window.openLB = function(i){ cur=i; lbImg.src=curList[cur].src; lightbox.classList.add('open'); }
+function closeLB(){ lightbox.classList.remove('open'); }
+function prev(){ cur=(cur-1+curList.length)%curList.length; lbImg.src=curList[cur].src; }
+function next(){ cur=(cur+1)%curList.length; lbImg.src=curList[cur].src; }
+lbClose.onclick=closeLB; lbPrev.onclick=prev; lbNext.onclick=next;
+lightbox.addEventListener('click', e=>{ if(e.target===lightbox) closeLB(); });
+document.addEventListener('keydown', e=>{
+  if(!lightbox.classList.contains('open')) return;
+  if(e.key==='Escape') closeLB(); if(e.key==='ArrowLeft') prev(); if(e.key==='ArrowRight') next();
+});
+lbDL.onclick=()=>{ const a=document.createElement('a'); a.href=curList[cur].src; a.download=(curList[cur].cap||'image')+'.jpg'; a.click(); };
+lbShare.onclick=async()=>{ const url=curList[cur].src; if(navigator.share){ try{ await navigator.share({title:curList[cur].cap,url}); }catch(e){} } else { try{ await navigator.clipboard.writeText(url); alert('คัดลอกลิงก์แล้ว'); }catch(e){ alert(url); } }};
+
+// init
+document.getElementById('year').textContent=new Date().getFullYear();
+applyFilter();
+</script>
+</body>
+</html>
